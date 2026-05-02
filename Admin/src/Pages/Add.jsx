@@ -20,6 +20,10 @@ const Add = () => {
                 <input className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="Aero Buds Pro" />
               </label>
               <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Brand</span>
+                <input className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="Tronix" />
+              </label>
+              <label className="space-y-2">
                 <span className="text-sm font-bold text-gray-600">Category</span>
                 <select className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400">
                   {categories.map((category) => (
@@ -27,22 +31,60 @@ const Add = () => {
                   ))}
                 </select>
               </label>
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Subcategory</span>
+                <input className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="Headphones" />
+              </label>
             </div>
             <label className="mt-4 block space-y-2">
               <span className="text-sm font-bold text-gray-600">Description</span>
-              <textarea className="h-36 w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="Write product details, specs, and warranty information." />
+              <textarea className="h-28 w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="Write product details, specs, and warranty information." />
             </label>
+            <label className="mt-4 block space-y-2">
+              <span className="text-sm font-bold text-gray-600">Specifications</span>
+              <textarea className="h-24 w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="RAM: 8GB, Battery: 40h, Bluetooth: 5.2" />
+            </label>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <label className="flex items-center gap-3 text-sm font-bold text-gray-600">
+                <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-red-500 focus:ring-red-500" />
+                Bestseller
+              </label>
+              <label className="flex items-center gap-3 text-sm font-bold text-gray-600">
+                <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-red-500 focus:ring-red-500" />
+                Featured
+              </label>
+            </div>
           </div>
 
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
             <h2 className="mb-5 text-lg font-black">Pricing and Stock</h2>
             <div className="grid gap-4 md:grid-cols-3">
-              {["Price", "Compare price", "Stock quantity"].map((label) => (
-                <label key={label} className="space-y-2">
-                  <span className="text-sm font-bold text-gray-600">{label}</span>
-                  <input className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder={label === "Stock quantity" ? "48" : "129"} />
-                </label>
-              ))}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Price</span>
+                <input type="number" className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="129" />
+              </label>
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Discount price</span>
+                <input type="number" className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="99" />
+              </label>
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Stock quantity</span>
+                <input type="number" className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="48" />
+              </label>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Warranty</span>
+                <input className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="1 Year" />
+              </label>
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Rating</span>
+                <input type="number" step="0.1" min="0" max="5" className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" placeholder="4.5" />
+              </label>
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">Date</span>
+                <input type="date" className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400" />
+              </label>
             </div>
           </div>
         </section>
