@@ -86,8 +86,8 @@ const Home = () => {
 
   return (
     <main className="bg-white">
-      <section className="mx-auto grid w-[92%] max-w-6xl gap-5 py-8 lg:grid-cols-[1.8fr_0.9fr]">
-        <div className="relative min-h-[430px] overflow-hidden rounded-lg bg-gray-900 md:min-h-[500px] lg:min-h-[560px]">
+      <section className="mx-auto grid w-[92%] max-w-6xl gap-5 py-8 lg:grid-cols-[1.8fr_0.9fr]  ">
+        <div className="relative h-96 min-h-[430px]  rounded-lg bg-gray-900 md:min-h-[390px]  lg:min-h-[390px]  ">
           {heroSlides.map((slide, index) => (
             <div
               key={slide.title}
@@ -103,11 +103,11 @@ const Home = () => {
             </div>
           ))}
 
-          <div className="relative flex min-h-[430px] max-w-xl flex-col justify-center p-8 text-white md:min-h-[500px] md:p-12 lg:min-h-[560px]">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-200">
+          <div className="relative flex min-h-[430px] max-w-xl flex-col justify-center p-8 text-white md:min-h-[390px] md:p-12 lg:min-h-[390px] ">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-500 ">
               {heroSlides[activeSlide].label}
             </p>
-            <h1 className="text-4xl font-black leading-tight md:text-5xl">
+            <h1 className="text-3xl font-black leading-tight md:text-4xl">
               {heroSlides[activeSlide].title}
             </h1>
             <p className="mt-4 text-sm leading-6 text-white/80">
@@ -171,16 +171,16 @@ const Home = () => {
             <Link
               key={item.title}
               to="/products"
-              className="relative min-h-40 overflow-hidden rounded-lg bg-gray-900 p-6 text-white"
+              className="relative min-h-40 overflow-hidden rounded-lg bg-gray-600 p-6 text-white "
             >
               <img
                 src={item.image}
                 alt={item.title}
                 className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500 hover:scale-105"
               />
-              <div className="relative">
-                <p className="text-xs font-bold uppercase tracking-widest text-red-100">Featured</p>
-                <h2 className="mt-2 text-2xl font-black">{item.title}</h2>
+              <div className="relative bg-white/40 hover:bg-red-500  top-5   p-4 text-center rounded-2xl   ">
+                {/* <p className="text-xs font-bold uppercase tracking-widest text-red-500">Featured</p> */}
+                <h2 className="mt-2 text-2xl  text-center  font-black">{item.title}</h2>
               </div>
             </Link>
           ))}

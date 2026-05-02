@@ -183,21 +183,21 @@ export const Navbar = () => {
           </button>
         </form>
       </div>
-
+       {/* Mobile side bar  */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/40 transition md:hidden ${
+        className={`fixed inset-0 z-[60] bg-black/40 h-screen transition md:hidden ${
           isSidebarOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={() => setIsSidebarOpen(false)}
       >
         <aside
-          className={`h-full w-72 bg-white p-6 shadow-2xl transition-transform duration-300 ${
+          className={`h-screen w-64 bg-white p-6 shadow-2xl transition-transform duration-300 ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="mb-8 flex items-center justify-between">
-            <span className="text-2xl font-black text-red-500">Tronix</span>
+          <div className="mb-8 flex items-center  justify-between">
+            <span className="text-2xl font-black text-red-500 ">Tronix</span>
             <button
               type="button"
               aria-label="Close menu"
