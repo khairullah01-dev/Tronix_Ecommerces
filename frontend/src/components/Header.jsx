@@ -124,8 +124,7 @@ export const Navbar = () => {
 
         <div className="flex items-center gap-3 text-gray-700">
           {isLoggedIn && (
-            // This text appears only after login/signup.
-            // user?.name comes from AuthContext, which gets it from backend login/register/profile.
+           
             <span className="hidden max-w-36 truncate text-sm font-bold text-gray-600 lg:block">
               Hi, {user?.name || "User"}
             </span>

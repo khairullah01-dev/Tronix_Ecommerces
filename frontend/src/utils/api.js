@@ -1,7 +1,7 @@
 // This is the backend URL used by the frontend.
 // If you create frontend/.env with VITE_BACKEND_URL, that value will be used.
 // Otherwise it falls back to localhost:3000 because your backend .env has PORT=3000.
-export const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+export const API_URL = import.meta.env.VITE_BACKEND_URL ;
 
 // apiRequest is a helper function so we do not repeat fetch code in every page.
 // It automatically:
@@ -28,4 +28,5 @@ export const apiRequest = async (path, options = {}) => {
   }
 
   return data;
+ 
 };
