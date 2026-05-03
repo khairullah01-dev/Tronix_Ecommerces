@@ -8,7 +8,7 @@ import {
   IoSyncOutline,
   IoCubeOutline,
 } from "react-icons/io5";
-import ProductCard from "../components/ProductCard";
+import ProductCard, { ProductCard2 } from "../components/ProductCard";
 import { blogPosts, categories, products } from "../data/products";
 
 const Home = () => {
@@ -204,12 +204,12 @@ const Home = () => {
           })}
         </div>
       </section>
-
-      <section className="mx-auto w-[92%] max-w-6xl py-10">
+    {/* Flash sale Section */}
+      <section className="mx-auto w-[92%] max-w-6xl py-10 ">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">New arrival</p>
-            <h2 className="mt-2 text-2xl font-black">Fresh Tech</h2>
+            <p className="text-2xl font-bold   text-black">New Arrival</p>
+            
           </div>
           <Link to="/products" className="text-sm font-bold text-gray-500 hover:text-red-500">
             View all
@@ -217,11 +217,44 @@ const Home = () => {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard2 key={product.id} product={product} />
           ))}
         </div>
       </section>
 
+
+      <section className="mx-auto w-[92%] max-w-6xl py-12">
+        <div className="mb-6 flex w-6xl items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-3xl capitalize font-bold   ">Flash sale</p>
+          
+            <div className="flex items-center gap-2 ">
+              {[
+                ["Day", timeLeft.days],
+                ["Hour", timeLeft.hours],
+                ["Min", timeLeft.minutes],
+                ["Sec", timeLeft.seconds],
+              ].map(([label, value]) => (
+                <div key={label} className="min-w-9  aspect-square rounded-sm border border-gray-400 px-2 py-1 text-center flex flex-col justify-center ">
+                  <span className=" font-black tabular-nums text-red-400">{String(value).padStart(1, "0")}</span>
+                  <span className="mx-0.5 text-[9px] font-bold uppercase text-black/55">{label}</span>
+                </div>
+              ))}
+               
+            </div>
+            
+            </div>
+            <Link to="/products" className="text-sm font-bold text-gray-500 hover:text-red-500">
+            View all
+          </Link>
+          </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {sale.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+{/* Feature Section */}
       <section className="bg-gray-50 py-12">
         <div className="mx-auto grid w-[92%] max-w-6xl gap-4 md:grid-cols-4">
           {[
@@ -230,42 +263,16 @@ const Home = () => {
             ["Easy Returns", "14-day return window", IoSyncOutline],
             ["Quality Checked", "Tested before shipping", IoBagCheckOutline],
           ].map(([title, text, Icon]) => (
-            <div key={title} className="rounded-lg bg-white p-6 shadow-sm">
-              <Icon className="mb-4 text-3xl text-red-500" />
+            <div key={title} className="flex items-center gap-4 rounded-lg bg-white p-6 shadow-sm">
+              <Icon className=" text-4xl text-red-500" />
+              <div className="">
               <h3 className="font-black">{title}</h3>
               <p className="mt-1 text-sm text-gray-500">{text}</p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto w-[92%] max-w-6xl py-12">
-        <div className="mb-6 flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">Flash sale</p>
-            <div className="flex items-center gap-1.5">
-              {[
-                ["D", timeLeft.days],
-                ["H", timeLeft.hours],
-                ["M", timeLeft.minutes],
-                ["S", timeLeft.seconds],
-              ].map(([label, value]) => (
-                <div key={label} className="min-w-10 rounded-sm bg-gray-900 px-2 py-1 text-center text-white">
-                  <span className="text-xs font-black tabular-nums">{String(value).padStart(2, "0")}</span>
-                  <span className="ml-0.5 text-[9px] font-bold uppercase text-white/55">{label}</span>
-                </div>
-              ))}
             </div>
-          </div>
-          <h2 className="text-2xl font-black">Limited Deals</h2>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {sale.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          ))} 
         </div>
       </section>
-
       <section className="mx-auto w-[92%] max-w-6xl py-12">
         <div className="mb-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">Latest news</p>

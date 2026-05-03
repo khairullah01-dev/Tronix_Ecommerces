@@ -16,7 +16,7 @@ const Product = () => {
   );
 
   return (
-    <main className="bg-white py-10">
+    <main className="bg-white py-10 ">
       <div className="mx-auto w-[92%] max-w-6xl">
         <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
           <section>
