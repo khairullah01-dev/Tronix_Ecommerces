@@ -97,7 +97,7 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden  items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <NavLink key={link.path} to={link.path} className={navClass}>
               {link.label}
