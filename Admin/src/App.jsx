@@ -48,7 +48,7 @@ const App = () => {
         <Sidebar />
         <div className="w-full px-4 py-6 md:px-8 md:py-8">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Dashboard token={token} />} />
             <Route path="/add" element={<Add token={token} />} />
             <Route path="/list" element={<List token={token} />} />
             <Route path="/order" element={<Order token={token} />} />

@@ -2,27 +2,56 @@ import React, { useEffect, useMemo, useState } from "react";
 import { IoFilterOutline, IoSearchOutline } from "react-icons/io5";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import { categories, products } from "../data/products";
+import { apiRequest } from "../utils/api";
 
 const Collection = () => {
   const [searchParams] = useSearchParams();
   const [showFilter, setShowFilter] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  // Fetch all products from the real backend
   useEffect(() => {
-    // Header search sends customers to /products?search=phone.
-    // This effect reads that URL value and places it inside this page search input.
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await apiRequest("/api/product/list");
+        setProducts(data.products || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Read ?search= from URL (set by the header search bar)
+  useEffect(() => {
     setQuery(searchParams.get("search") || "");
   }, [searchParams]);
 
+  // Derive unique categories from the live product list
+  const categories = useMemo(() => {
+    const cats = [...new Set(products.map((p) => p.category).filter(Boolean))];
+    return cats.sort();
+  }, [products]);
+
+
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchesCategory = activeCategory === "All" || product.category === activeCategory;
-      const matchesQuery = product.name.toLowerCase().includes(query.toLowerCase());
+      const matchesCategory =
+        activeCategory === "All" || product.category === activeCategory;
+      const matchesQuery = product.name
+        .toLowerCase()
+        .includes(query.toLowerCase());
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [products, activeCategory, query]);
 
   return (
     <main className="min-h-screen bg-gray-50 py-10">
@@ -57,8 +86,8 @@ const Collection = () => {
           <aside className={`${showFilter ? "block" : "hidden"} lg:block`}>
             <div className="rounded-lg border border-gray-100 bg-white p-5 shadow-sm lg:sticky lg:top-28">
               <h2 className="mb-5 text-sm font-black uppercase tracking-widest">Categories</h2>
-              <div className="space-y-2">
-                {["All", ...categories.map((item) => item.name)].map((category) => (
+              <div className="space-y-2 border">
+                {["All", ...categories].map((category) => (
                   <button
                     key={category}
                     type="button"
@@ -73,7 +102,7 @@ const Collection = () => {
                     <span>
                       {category === "All"
                         ? products.length
-                        : products.filter((product) => product.category === category).length}
+                        : products.filter((p) => p.category === category).length}
                     </span>
                   </button>
                 ))}
@@ -93,7 +122,9 @@ const Collection = () => {
           <section>
             <div className="mb-5 flex items-center justify-between rounded-lg border border-gray-100 bg-white px-5 py-3 text-sm">
               <p className="font-semibold text-gray-500">
-                Showing <span className="font-black text-gray-900">{filteredProducts.length}</span> products
+                Showing{" "}
+                <span className="font-black text-gray-900">{filteredProducts.length}</span>{" "}
+                products
               </p>
               <select className="bg-transparent text-sm font-semibold outline-none">
                 <option>Default sorting</option>
@@ -102,11 +133,28 @@ const Collection = () => {
               </select>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {loading && (
+              <div className="flex items-center justify-center py-24 text-gray-400 font-semibold">
+                Loading products…
+              </div>
+            )}
+            {error && !loading && (
+              <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center text-sm font-semibold text-red-500">
+                {error}
+              </div>
+            )}
+            {!loading && !error && (
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
+                {filteredProducts.length === 0 && (
+                  <p className="col-span-full py-12 text-center text-gray-400 font-semibold">
+                    No products found.
+                  </p>
+                )}
+              </div>
+            )}
           </section>
         </div>
       </div>

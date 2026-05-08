@@ -3,6 +3,7 @@ import { MdOutlineMail } from "react-icons/md";
 import {
   IoBagOutline,
   IoClose,
+  IoGridOutline,
   IoLogOutOutline,
   IoMenu,
   IoPersonOutline,
@@ -124,7 +125,6 @@ export const Navbar = () => {
 
         <div className="flex items-center gap-3 text-gray-700">
           {isLoggedIn && (
-           
             <span className="hidden max-w-36 truncate text-sm font-bold text-gray-600 lg:block">
               Hi, {user?.name || "User"}
             </span>
@@ -149,6 +149,20 @@ export const Navbar = () => {
               <span className="hidden sm:inline">Login</span>
             </Link>
           )}
+
+          {/* Admin panel shortcut */}
+          <a
+            href="http://localhost:5174"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Admin panel"
+            title="Open Admin Panel"
+            className="inline-flex h-10 items-center gap-2 rounded-sm border border-gray-200 px-3 text-sm font-bold text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-500  "
+          >
+            <IoGridOutline size={17} />
+            <span className="hidden sm:inline">Admin</span>
+          </a>
+
           <Link
             to="/cart"
             aria-label="Cart"
@@ -222,7 +236,6 @@ export const Navbar = () => {
               <button
                 type="button"
                 onClick={() => {
-                  // Mobile menu logout uses the same logout function as desktop.
                   handleLogout();
                   setIsSidebarOpen(false);
                 }}
@@ -239,6 +252,18 @@ export const Navbar = () => {
                 Login
               </NavLink>
             )}
+
+            {/* Admin panel link in mobile sidebar */}
+            <a
+              href="http://localhost:5174"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsSidebarOpen(false)}
+              className="mt-2 flex items-center gap-2 rounded-sm border border-gray-200 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-900 hover:text-white"
+            >
+              <IoGridOutline size={17} />
+              Admin Panel
+            </a>
           </div>
         </aside>
       </div>

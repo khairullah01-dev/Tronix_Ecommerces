@@ -36,8 +36,7 @@ const Login = ({ setToken }) => {
     <main className="grid min-h-screen bg-gray-50 lg:grid-cols-[1fr_1fr]">
       <section className="relative hidden overflow-hidden bg-gray-900 text-white lg:block">
         <img
-          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-          alt="Admin analytics"
+          src="https://res.cloudinary.com/dmtqzmaei/image/upload/v1778219645/IT_Sector_r4racx.jpg"
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
         <div className="relative flex h-full flex-col justify-center p-16">

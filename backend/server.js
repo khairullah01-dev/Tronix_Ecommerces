@@ -9,33 +9,7 @@ import productRouter from "./Routes/product.route.js";
 import cartRouter from "./Routes/cartRoutes.js";
 import orderRouter from "./Routes/orderRoutes.js";
 
-/*
-Your previous server setup was:
-
-import dotenv from 'dotenv'
-dotenv.config()
-import dns from 'dns'
-dns.setServers(["1.1.1.1","8.8.8.8"])
-const port = process.env.PORT || 4000
-app.use(cors())
-app.get('/', (req, res) => {
-  res.send("API working ")
-})
-app.use('/api/user', userRouter)
-app.use('/api/product', productRouter)
-
-What changed:
-- dotenv/config values now live in config/env.js.
-- PORT is read from env.port instead of process.env.PORT directly.
-- CORS now allows only your frontend/admin URLs.
-- Added /api/health for checking backend status.
-- Added /api/cart and /api/order routes for full ecommerce flow.
-- Added 404 handler for wrong routes.
-*/
-
-// Kept from your previous code:
-// You added this DNS setting because your server/database connection needed it.
-// I am not changing it, so the backend keeps the same DNS behavior.
+// DNS setting kept from original code for MongoDB Atlas connectivity
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 validateEnv();
@@ -45,11 +19,22 @@ const app = express();
 await connectDb();
 connectCloudinary();
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS: allow requests from the frontend and admin panel
 app.use(
-  cors()
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS: origin ${origin} not allowed`), false);
+    },
+    credentials: true,
+  })
 );
 
 if (env.nodeEnv === "development") {

@@ -7,44 +7,69 @@ import {
   IoShieldCheckmarkOutline,
   IoSyncOutline,
   IoCubeOutline,
+  IoPhonePortraitOutline,
+  IoLaptopOutline,
+  IoHeadsetOutline,
+  IoGameControllerOutline,
+  IoWatchOutline,
+  IoCameraOutline,
+  IoTvOutline,
+  IoTabletLandscapeOutline
+
 } from "react-icons/io5";
 import ProductCard, { ProductCard2 } from "../components/ProductCard";
-import { blogPosts, categories, products } from "../data/products";
+import { blogPosts } from "../data/products";
+import { apiRequest } from "../utils/api";
+
+
+const categories = [
+  { name: "Phones", icon: IoPhonePortraitOutline },
+  { name: "Laptops", icon: IoLaptopOutline },
+  { name: "Audio", icon: IoHeadsetOutline },
+  { name: "Gaming", icon: IoGameControllerOutline },
+  { name: "Watches", icon: IoWatchOutline },
+  { name: "Cameras", icon: IoCameraOutline },
+  { name: "Tablets", icon: IoTabletLandscapeOutline },
+  { name: "Displays", icon: IoTvOutline },
+];
+
+const heroSlides = [
+  {
+    title: "Better Devices for Better Life",
+    label: "New collection",
+    text: "Shop high-quality phones, laptops, audio gear, wearables, and smart accessories in one clean store.",
+    image:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80",
+  },
+  {
+    title: "Upgrade Your Work Setup",
+    label: "Editor picks",
+    text: "Find sharper displays, lighter laptops, and desk-ready accessories built for focus and comfort.",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=80",
+  },
+  {
+    title: "Immersive Sound, Cleaner Days",
+    label: "Audio deals",
+    text: "Explore earbuds, headphones, and speakers tuned for calls, music, gaming, and travel.",
+    image:
+      "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1400&q=80",
+  },
+];
 
 const Home = () => {
-  const featured = products.slice(0, 4);
-  const sale = products.slice(4, 8);
-  const heroSlides = [
-    {
-      title: "Better Devices for Better Life",
-      label: "New collection",
-      text: "Shop high-quality phones, laptops, audio gear, wearables, and smart accessories in one clean store.",
-      image:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80",
-    },
-    {
-      title: "Upgrade Your Work Setup",
-      label: "Editor picks",
-      text: "Find sharper displays, lighter laptops, and desk-ready accessories built for focus and comfort.",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=80",
-    },
-    {
-      title: "Immersive Sound, Cleaner Days",
-      label: "Audio deals",
-      text: "Explore earbuds, headphones, and speakers tuned for calls, music, gaming, and travel.",
-      image:
-        "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1400&q=80",
-    },
-  ];
+  const [products, setProducts] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
+  // Fetch products from backend
+  useEffect(() => {
+    apiRequest("/api/product/list")
+      .then((data) => setProducts(data.products || []))
+      .catch(() => {}); // silent fail — page still renders
+  }, []);
+
+  // Countdown timer
   useEffect(() => {
     const deadline = new Date();
     deadline.setDate(deadline.getDate() + 2);
@@ -52,42 +77,47 @@ const Home = () => {
 
     const updateTimer = () => {
       const distance = Math.max(0, deadline.getTime() - Date.now());
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / (1000 * 60)) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
-
-      setTimeLeft({ days, hours, minutes, seconds });
+      setTimeLeft({
+        days:    Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours:   Math.floor((distance / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((distance / (1000 * 60)) % 60),
+        seconds: Math.floor((distance / 1000) % 60),
+      });
     };
-
     updateTimer();
     const timer = setInterval(updateTimer, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
+  // Auto-advance hero slider
   useEffect(() => {
-    const slider = setInterval(() => {
-      setActiveSlide((current) => (current + 1) % heroSlides.length);
-    }, 4500);
-
+    const slider = setInterval(
+      () => setActiveSlide((c) => (c + 1) % heroSlides.length),
+      4500
+    );
     return () => clearInterval(slider);
-  }, [heroSlides.length]);
+  }, []);
 
-  const changeSlide = (direction) => {
-    setActiveSlide((current) => {
-      if (direction === "next") {
-        return (current + 1) % heroSlides.length;
-      }
+  const changeSlide = (dir) =>
+    setActiveSlide((c) =>
+      dir === "next"
+        ? (c + 1) % heroSlides.length
+        : (c - 1 + heroSlides.length) % heroSlides.length
+    );
 
-      return (current - 1 + heroSlides.length) % heroSlides.length;
-    });
-  };
+  // Derive featured / sale products from live data
+  const featured = products.slice(0, 4);
+  const sale = products.filter((p) => p.discountPrice).slice(0, 4);
+  const flashProducts = sale.length >= 2 ? sale : products.slice(4, 8);
+
+  // Unique categories from live products
+  const liveCategories = [...new Set(products.map((p) => p.category).filter(Boolean))];
 
   return (
     <main className="bg-white">
-      <section className="mx-auto grid w-[92%] max-w-6xl gap-5 py-8 lg:grid-cols-[1.8fr_0.9fr]  ">
-        <div className="relative h-96 min-h-[430px]  rounded-lg bg-gray-900 md:min-h-[390px]  lg:min-h-[390px]  ">
+      {/* ─── Hero ─────────────────────────────────────────────────────── */}
+      <section className="mx-auto grid w-[92%] max-w-6xl gap-5 py-8 lg:grid-cols-[1.8fr_0.9fr]">
+        <div className="relative h-96 min-h-[430px] rounded-lg bg-gray-900 md:min-h-[390px] lg:min-h-[390px]">
           {heroSlides.map((slide, index) => (
             <div
               key={slide.title}
@@ -103,8 +133,8 @@ const Home = () => {
             </div>
           ))}
 
-          <div className="relative flex min-h-[430px] max-w-xl flex-col justify-center p-8 text-white md:min-h-[390px] md:p-12 lg:min-h-[390px] ">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-500 ">
+          <div className="relative flex min-h-[430px] max-w-xl flex-col justify-center p-8 text-white md:min-h-[390px] md:p-12 lg:min-h-[390px]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-500">
               {heroSlides[activeSlide].label}
             </p>
             <h1 className="text-3xl font-black leading-tight md:text-4xl">
@@ -121,6 +151,7 @@ const Home = () => {
             </Link>
           </div>
 
+          {/* Dots */}
           <div className="absolute bottom-5 left-8 flex items-center gap-2 md:left-12">
             {heroSlides.map((slide, index) => (
               <button
@@ -135,6 +166,7 @@ const Home = () => {
             ))}
           </div>
 
+          {/* Arrows */}
           <div className="absolute bottom-5 right-5 flex gap-2">
             <button
               type="button"
@@ -155,39 +187,38 @@ const Home = () => {
           </div>
         </div>
 
+        {/* Side banners */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
           {[
             {
               title: "Studio audio",
-              image:
-                "https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=900&q=80",
+              image: "https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=900&q=80",
             },
             {
               title: "Gaming essentials",
-              image:
-                "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=80",
+              image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=80",
             },
           ].map((item) => (
             <Link
               key={item.title}
               to="/products"
-              className="relative min-h-40 overflow-hidden rounded-lg bg-gray-600 p-6 text-white "
+              className="relative min-h-40 overflow-hidden rounded-lg bg-gray-600 p-6 text-white"
             >
               <img
                 src={item.image}
                 alt={item.title}
                 className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500 hover:scale-105"
               />
-              <div className="relative bg-white/40 hover:bg-red-500  top-5   p-4 text-center rounded-2xl   ">
-                {/* <p className="text-xs font-bold uppercase tracking-widest text-red-500">Featured</p> */}
-                <h2 className="mt-2 text-2xl  text-center  font-black">{item.title}</h2>
+              <div className="relative top-5 rounded-2xl bg-white/40 p-4 text-center hover:bg-red-500">
+                <h2 className="mt-2 text-center text-2xl font-black">{item.title}</h2>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto w-[92%] max-w-6xl py-8">
+      {/* ─── Category grid ─────────────────────────────────────────────── */}
+       <section className="mx-auto w-[92%] max-w-6xl py-8 ">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {categories.map((category) => {
             const Icon = category.icon;
@@ -204,75 +235,97 @@ const Home = () => {
           })}
         </div>
       </section>
-    {/* Flash sale Section */}
-      <section className="mx-auto w-[92%] max-w-6xl py-10 ">
+
+
+      {/* ─── New Arrivals ───────────────────────────────────────────────── */}
+      <section className="mx-auto w-[92%] max-w-6xl py-10">
         <div className="mb-6 flex items-center justify-between">
-          <div>
-            <p className="text-2xl font-bold   text-black">New Arrival</p>
-            
+          <p className="text-2xl font-bold text-black">New Arrivals</p>
+          <Link to="/products" className="text-sm font-bold text-gray-500 hover:text-red-500">
+            View all
+          </Link>
+        </div>
+        {featured.length > 0 ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map((product) => (
+              <ProductCard2 key={product._id || product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-40 animate-pulse rounded-lg bg-gray-100" />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ─── Flash Sale ─────────────────────────────────────────────────── */}
+      <section className="mx-auto w-[92%] max-w-6xl py-12">
+        <div className="mb-6 flex w-full items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-3xl capitalize font-bold">Flash sale</p>
+            <div className="flex items-center gap-2">
+              {[
+                ["Day",  timeLeft.days],
+                ["Hour", timeLeft.hours],
+                ["Min",  timeLeft.minutes],
+                ["Sec",  timeLeft.seconds],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="flex min-w-9 flex-col justify-center rounded-sm border border-gray-400 px-2 py-1 text-center"
+                >
+                  <span className="font-black tabular-nums text-red-400">
+                    {String(value).padStart(2, "0")}
+                  </span>
+                  <span className="mx-0.5 text-[9px] font-bold uppercase text-black/55">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
           <Link to="/products" className="text-sm font-bold text-gray-500 hover:text-red-500">
             View all
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((product) => (
-            <ProductCard2 key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-
-      <section className="mx-auto w-[92%] max-w-6xl py-12">
-        <div className="mb-6 flex w-6xl items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="text-3xl capitalize font-bold   ">Flash sale</p>
-          
-            <div className="flex items-center gap-2 ">
-              {[
-                ["Day", timeLeft.days],
-                ["Hour", timeLeft.hours],
-                ["Min", timeLeft.minutes],
-                ["Sec", timeLeft.seconds],
-              ].map(([label, value]) => (
-                <div key={label} className="min-w-9  aspect-square rounded-sm border border-gray-400 px-2 py-1 text-center flex flex-col justify-center ">
-                  <span className=" font-black tabular-nums text-red-400">{String(value).padStart(1, "0")}</span>
-                  <span className="mx-0.5 text-[9px] font-bold uppercase text-black/55">{label}</span>
-                </div>
-              ))}
-               
-            </div>
-            
-            </div>
-            <Link to="/products" className="text-sm font-bold text-gray-500 hover:text-red-500">
-            View all
-          </Link>
+        {flashProducts.length > 0 ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {flashProducts.map((product) => (
+              <ProductCard key={product._id || product.id} product={product} />
+            ))}
           </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {sale.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-lg bg-gray-100" />
+            ))}
+          </div>
+        )}
       </section>
-{/* Feature Section */}
+
+      {/* ─── Trust badges ───────────────────────────────────────────────── */}
       <section className="bg-gray-50 py-12">
         <div className="mx-auto grid w-[92%] max-w-6xl gap-4 md:grid-cols-4">
           {[
-            ["Free Shipping", "On orders over $100", IoCubeOutline],
-            ["Secure Payment", "Protected checkout", IoShieldCheckmarkOutline],
-            ["Easy Returns", "14-day return window", IoSyncOutline],
-            ["Quality Checked", "Tested before shipping", IoBagCheckOutline],
+            ["Free Shipping",    "On orders over $100",    IoCubeOutline],
+            ["Secure Payment",   "Protected checkout",     IoShieldCheckmarkOutline],
+            ["Easy Returns",     "14-day return window",   IoSyncOutline],
+            ["Quality Checked",  "Tested before shipping", IoBagCheckOutline],
           ].map(([title, text, Icon]) => (
             <div key={title} className="flex items-center gap-4 rounded-lg bg-white p-6 shadow-sm">
-              <Icon className=" text-4xl text-red-500" />
-              <div className="">
-              <h3 className="font-black">{title}</h3>
-              <p className="mt-1 text-sm text-gray-500">{text}</p>
+              <Icon className="text-4xl text-red-500" />
+              <div>
+                <h3 className="font-black">{title}</h3>
+                <p className="mt-1 text-sm text-gray-500">{text}</p>
+              </div>
             </div>
-            </div>
-          ))} 
+          ))}
         </div>
       </section>
+
+      {/* ─── Blog ───────────────────────────────────────────────────────── */}
       <section className="mx-auto w-[92%] max-w-6xl py-12">
         <div className="mb-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">Latest news</p>

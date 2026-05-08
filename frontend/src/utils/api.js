@@ -1,11 +1,13 @@
+// Backend URL: reads from .env (VITE_BACKEND_URL) or falls back to localhost for dev
+export const API_URL =
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-
-// This is the backend URL used by the frontend.
-// If you create frontend/.env with VITE_BACKEND_URL, that value will be used.
-// Otherwise it falls back to localhost:3000 because your backend .env has PORT=3000.
-export const API_URL = import.meta.env.VITE_BACKEND_URL || "https://tronix-ecommerces-3v8q.vercel.app";
-
-
+/**
+ * Central fetch wrapper that automatically:
+ * - Prepends the API base URL
+ * - Attaches the auth token from localStorage as a `token` header
+ * - Parses JSON and throws on non-2xx or { success: false } responses
+ */
 export const apiRequest = async (path, options = {}) => {
   const token = localStorage.getItem("tronix_token");
 
@@ -25,6 +27,26 @@ export const apiRequest = async (path, options = {}) => {
   }
 
   return data;
- 
 };
-console.log("API_URL:", API_URL);
+
+/**
+ * Multipart fetch wrapper for file uploads (e.g. adding products with images).
+ * Does NOT set Content-Type — the browser sets it with the correct boundary.
+ */
+export const apiUpload = async (path, formData, token) => {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers: {
+      ...(token ? { token } : {}),
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || "Something went wrong");
+  }
+
+  return data;
+};
