@@ -24,17 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS: allow requests from the frontend and admin panel
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error(`CORS: origin ${origin} not allowed`), false);
-    },
-    credentials: true,
-  })
+  cors()
 );
 
 if (env.nodeEnv === "development") {
