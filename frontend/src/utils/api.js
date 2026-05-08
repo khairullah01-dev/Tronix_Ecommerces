@@ -1,6 +1,6 @@
 // Backend URL: reads from .env (VITE_BACKEND_URL) or falls back to localhost for dev
 export const API_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  import.meta.env.VITE_BACKEND_URL;
 
 /**
  * Central fetch wrapper that automatically:
