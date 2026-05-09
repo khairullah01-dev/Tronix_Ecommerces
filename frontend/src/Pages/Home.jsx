@@ -66,7 +66,7 @@ const Home = () => {
   useEffect(() => {
     apiRequest("/api/product/list")
       .then((data) => setProducts(data.products || []))
-      .catch(() => {}); // silent fail — page still renders
+      .catch(() => { }); // silent fail — page still renders
   }, []);
 
   // Countdown timer
@@ -78,8 +78,8 @@ const Home = () => {
     const updateTimer = () => {
       const distance = Math.max(0, deadline.getTime() - Date.now());
       setTimeLeft({
-        days:    Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours:   Math.floor((distance / (1000 * 60 * 60)) % 24),
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((distance / (1000 * 60)) % 60),
         seconds: Math.floor((distance / 1000) % 60),
       });
@@ -121,9 +121,8 @@ const Home = () => {
           {heroSlides.map((slide, index) => (
             <div
               key={slide.title}
-              className={`absolute inset-0 transition-opacity duration-700 ${
-                activeSlide === index ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-700 ${activeSlide === index ? "opacity-100" : "opacity-0"
+                }`}
             >
               <img
                 src={slide.image}
@@ -159,9 +158,8 @@ const Home = () => {
                 type="button"
                 aria-label={`Show slide ${index + 1}`}
                 onClick={() => setActiveSlide(index)}
-                className={`h-2 rounded-full transition-all ${
-                  activeSlide === index ? "w-8 bg-red-500" : "w-2 bg-white/60 hover:bg-white"
-                }`}
+                className={`h-2 rounded-full transition-all ${activeSlide === index ? "w-8 bg-red-500" : "w-2 bg-white/60 hover:bg-white"
+                  }`}
               />
             ))}
           </div>
@@ -188,7 +186,7 @@ const Home = () => {
         </div>
 
         {/* Side banners */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+        <div className="border border-yellow-400 grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
           {[
             {
               title: "Studio audio",
@@ -209,7 +207,7 @@ const Home = () => {
                 alt={item.title}
                 className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500 hover:scale-105"
               />
-              <div className="relative top-5 rounded-2xl bg-white/40 p-4 text-center hover:bg-red-500">
+              <div className="relative top-5 rounded-2xl backdrop-blur-sm bg-white/30 p-4 text-center hover:bg-red-400">
                 <h2 className="mt-2 text-center text-2xl font-black">{item.title}</h2>
               </div>
             </Link>
@@ -218,7 +216,7 @@ const Home = () => {
       </section>
 
       {/* ─── Category grid ─────────────────────────────────────────────── */}
-       <section className="mx-auto w-[92%] max-w-6xl py-8 ">
+      <section className="mx-auto w-[92%] max-w-6xl py-8 ">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {categories.map((category) => {
             const Icon = category.icon;
@@ -267,10 +265,10 @@ const Home = () => {
             <p className="text-3xl capitalize font-bold">Flash sale</p>
             <div className="flex items-center gap-2">
               {[
-                ["Day",  timeLeft.days],
+                ["Day", timeLeft.days],
                 ["Hour", timeLeft.hours],
-                ["Min",  timeLeft.minutes],
-                ["Sec",  timeLeft.seconds],
+                ["Min", timeLeft.minutes],
+                ["Sec", timeLeft.seconds],
               ].map(([label, value]) => (
                 <div
                   key={label}
@@ -309,10 +307,10 @@ const Home = () => {
       <section className="bg-gray-50 py-12">
         <div className="mx-auto grid w-[92%] max-w-6xl gap-4 md:grid-cols-4">
           {[
-            ["Free Shipping",    "On orders over $100",    IoCubeOutline],
-            ["Secure Payment",   "Protected checkout",     IoShieldCheckmarkOutline],
-            ["Easy Returns",     "14-day return window",   IoSyncOutline],
-            ["Quality Checked",  "Tested before shipping", IoBagCheckOutline],
+            ["Free Shipping", "On orders over $100", IoCubeOutline],
+            ["Secure Payment", "Protected checkout", IoShieldCheckmarkOutline],
+            ["Easy Returns", "14-day return window", IoSyncOutline],
+            ["Quality Checked", "Tested before shipping", IoBagCheckOutline],
           ].map(([title, text, Icon]) => (
             <div key={title} className="flex items-center gap-4 rounded-lg bg-white p-6 shadow-sm">
               <Icon className="text-4xl text-red-500" />
