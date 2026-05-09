@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   IoCloudUploadOutline,
-  IoImageOutline,
   IoSaveOutline,
   IoTrashOutline,
 } from "react-icons/io5";
@@ -25,7 +24,7 @@ const emptyForm = {
   name: "",
   brand: "",
   category: "Electronics",
-  subCategory: "Mobile",
+  subcategory: "Mobile",
   description: "",
   specifications: "",
   price: "",
@@ -42,61 +41,94 @@ const Add = ({ token }) => {
   const [images, setImages] = useState([null, null, null, null]);
   const [previews, setPreviews] = useState([null, null, null, null]);
   const [loading, setLoading] = useState(false);
+
   const fileRefs = [useRef(), useRef(), useRef(), useRef()];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleImageChange = (index, file) => {
     if (!file) return;
-    const updated = [...images];
-    updated[index] = file;
-    setImages(updated);
 
-    const prev = [...previews];
-    prev[index] = URL.createObjectURL(file);
-    setPreviews(prev);
+    const updatedImages = [...images];
+    updatedImages[index] = file;
+    setImages(updatedImages);
+
+    const updatedPreviews = [...previews];
+    updatedPreviews[index] = URL.createObjectURL(file);
+    setPreviews(updatedPreviews);
   };
 
   const removeImage = (index) => {
-    const updatedImgs = [...images];
-    updatedImgs[index] = null;
-    setImages(updatedImgs);
+    const updatedImages = [...images];
+    updatedImages[index] = null;
+    setImages(updatedImages);
 
-    const updatedPrev = [...previews];
-    if (updatedPrev[index]) URL.revokeObjectURL(updatedPrev[index]);
-    updatedPrev[index] = null;
-    setPreviews(updatedPrev);
+    const updatedPreviews = [...previews];
+
+    if (updatedPreviews[index]) {
+      URL.revokeObjectURL(updatedPreviews[index]);
+    }
+
+    updatedPreviews[index] = null;
+    setPreviews(updatedPreviews);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const hasImage = images.some(Boolean);
+
     if (!hasImage) {
-      toast.error("Please upload at least one product image.");
+      toast.error("Please upload at least one image");
       return;
     }
 
     setLoading(true);
 
     try {
+      const specsObject = {};
+
+      form.specifications.split("\n").forEach((line) => {
+        const [key, value] = line.split(":");
+
+        if (key && value) {
+          specsObject[key.trim()] = value.trim();
+        }
+      });
+
       const formData = new FormData();
-      Object.entries(form).forEach(([key, val]) => formData.append(key, val));
-      images.forEach((img, i) => {
-        if (img) formData.append(`image${i + 1}`, img);
+
+      Object.entries({
+        ...form,
+        specifications: JSON.stringify(specsObject),
+      }).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      images.forEach((img, index) => {
+        if (img) {
+          formData.append(`image${index + 1}`, img);
+        }
       });
 
       const response = await axios.post(
         `${backendUrl}/api/product/add`,
         formData,
-        { headers: { token } }
+        {
+          headers: { token },
+        }
       );
 
       if (response.data.success) {
-        toast.success("Product added successfully!");
+        toast.success("Product added successfully");
+
         setForm(emptyForm);
         setImages([null, null, null, null]);
         setPreviews([null, null, null, null]);
@@ -113,164 +145,231 @@ const Add = ({ token }) => {
   return (
     <main>
       <div className="mb-8">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">Catalog</p>
-        <h1 className="mt-2 text-3xl font-black text-gray-900">Add Product</h1>
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">
+          Catalog
+        </p>
+
+        <h1 className="mt-2 text-3xl font-black text-gray-900">
+          Add Product
+        </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid gap-6 xl:grid-cols-[1fr_360px]">
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-6 xl:grid-cols-[1fr_360px]"
+      >
         <section className="space-y-6">
           {/* Product Information */}
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black">Product Information</h2>
-           <div className="grid gap-4 md:grid-cols-2">
-  {/* Product Name */}
-  <label className="space-y-2">
-    <span className="text-sm font-bold text-gray-600">
-      Product name
-    </span>
+            <h2 className="mb-5 text-lg font-black">
+              Product Information
+            </h2>
 
-    <input
-      name="name"
-      value={form.name}
-      onChange={handleChange}
-      required
-      placeholder="Aero Buds Pro"
-      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-    />
-  </label>
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* Product Name */}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Product Name
+                </span>
 
-  {/* Brand */}
-  <label className="space-y-2">
-    <span className="text-sm font-bold text-gray-600">
-      Brand
-    </span>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="iPhone 15 Pro"
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
 
-    <input
-      name="brand"
-      value={form.brand}
-      onChange={handleChange}
-      placeholder="Tronix"
-      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-    />
-  </label>
+              {/* Brand */}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Brand
+                </span>
 
-  {/* Category */}
-  <label className="space-y-2">
-    <span className="text-sm font-bold text-gray-600">
-      Category
-    </span>
+                <input
+                  type="text"
+                  name="brand"
+                  value={form.brand}
+                  onChange={handleChange}
+                  required
+                  placeholder="Apple"
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
 
-    <select
-      name="category"
-      value={form.category}
-      onChange={(e) =>
-        setForm((prev) => ({
-          ...prev,
-          category: e.target.value,
-          subCategory:
-            categoryOptions[e.target.value][0],
-        }))
-      }
-      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-    >
-      {Object.keys(categoryOptions).map((cat) => (
-        <option key={cat} value={cat}>
-          {cat}
-        </option>
-      ))}
-    </select>
-  </label>
+              {/* Category */}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Category
+                </span>
 
-  {/* SubCategory */}
-  <label className="space-y-2">
-    <span className="text-sm font-bold text-gray-600">
-      SubCategory
-    </span>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                      subCategory:
+                        categoryOptions[e.target.value][0],
+                    }))
+                  }
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                >
+                  {Object.keys(categoryOptions).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-    <select
-      name="subCategory"
-      value={form.subCategory}
-      onChange={handleChange}
-      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-    >
-      {categoryOptions[form.category].map((sub) => (
-        <option key={sub} value={sub}>
-          {sub}
-        </option>
-      ))}
-    </select>
-  </label>
-</div>
+              {/* SubCategory */}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Sub Category
+                </span>
+
+                <select
+                  name="subCategory"
+                  value={form.subCategory}
+                  onChange={handleChange}
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                >
+                  {categoryOptions[form.category].map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            {/* Description */}
             <label className="mt-4 block space-y-2">
-              <span className="text-sm font-bold text-gray-600">Description</span>
+              <span className="text-sm font-bold text-gray-600">
+                Description
+              </span>
+
               <textarea
                 name="description"
                 value={form.description}
                 onChange={handleChange}
                 required
+                placeholder="Write product details..."
                 className="h-28 w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-                placeholder="Write product details, specs, and warranty information."
               />
             </label>
+
+            {/* Specifications */}
             <label className="mt-4 block space-y-2">
               <span className="text-sm font-bold text-gray-600">
-                Specifications{" "}
-                <span className="font-normal text-gray-400">(key: value, one per line)</span>
+                Specifications
               </span>
+
               <textarea
                 name="specifications"
                 value={form.specifications}
                 onChange={handleChange}
+                placeholder={`RAM: 8GB
+Battery: 5000mAh
+Camera: 48MP`}
                 className="h-24 w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-                placeholder="RAM: 8GB&#10;Battery: 40h&#10;Bluetooth: 5.2"
               />
             </label>
+
+            {/* Checkbox */}
             <div className="mt-4 flex gap-6">
-              {[
-                { label: "Bestseller", name: "bestseller" },
-                { label: "Featured", name: "featured" },
-              ].map(({ label, name }) => (
-                <label key={name} className="flex items-center gap-3 text-sm font-bold text-gray-600">
-                  <input
-                    type="checkbox"
-                    name={name}
-                    checked={form[name]}
-                    onChange={handleChange}
-                    className="h-4 w-4 rounded border-gray-300 text-red-500 focus:ring-red-500"
-                  />
-                  {label}
-                </label>
-              ))}
+              <label className="flex items-center gap-3 text-sm font-bold text-gray-600">
+                <input
+                  type="checkbox"
+                  name="bestseller"
+                  checked={form.bestseller}
+                  onChange={handleChange}
+                />
+
+                Bestseller
+              </label>
+
+              <label className="flex items-center gap-3 text-sm font-bold text-gray-600">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={form.featured}
+                  onChange={handleChange}
+                />
+
+                Featured
+              </label>
             </div>
           </div>
 
-          {/* Pricing & Stock */}
+          {/* Pricing */}
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black">Pricing and Stock</h2>
+            <h2 className="mb-5 text-lg font-black">
+              Pricing & Stock
+            </h2>
+
             <div className="grid gap-4 md:grid-cols-3">
-              {[
-                { label: "Price ($)", name: "price", placeholder: "129" },
-                { label: "Discount price ($)", name: "discountPrice", placeholder: "99" },
-                { label: "Stock quantity", name: "stock", placeholder: "48" },
-              ].map(({ label, name, placeholder }) => (
-                <label key={name} className="space-y-2">
-                  <span className="text-sm font-bold text-gray-600">{label}</span>
-                  <input
-                    type="number"
-                    name={name}
-                    value={form[name]}
-                    onChange={handleChange}
-                    required={name === "price" || name === "stock"}
-                    placeholder={placeholder}
-                    className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
-                  />
-                </label>
-              ))}
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Price
+                </span>
+
+                <input
+                  type="number"
+                  name="price"
+                  value={form.price}
+                  onChange={handleChange}
+                  required
+                  placeholder="1000"
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
+
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Discount Price
+                </span>
+
+                <input
+                  type="number"
+                  name="discountPrice"
+                  value={form.discountPrice}
+                  onChange={handleChange}
+                  placeholder="900"
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
+
+              <label className="space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Stock
+                </span>
+
+                <input
+                  type="number"
+                  name="stock"
+                  value={form.stock}
+                  onChange={handleChange}
+                  required
+                  placeholder="20"
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
             </div>
+
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="space-y-2">
-                <span className="text-sm font-bold text-gray-600">Warranty</span>
+                <span className="text-sm font-bold text-gray-600">
+                  Warranty
+                </span>
+
                 <input
+                  type="text"
                   name="warranty"
                   value={form.warranty}
                   onChange={handleChange}
@@ -278,8 +377,12 @@ const Add = ({ token }) => {
                   className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
                 />
               </label>
+
               <label className="space-y-2">
-                <span className="text-sm font-bold text-gray-600">Rating (0–5)</span>
+                <span className="text-sm font-bold text-gray-600">
+                  Rating
+                </span>
+
                 <input
                   type="number"
                   step="0.1"
@@ -296,10 +399,13 @@ const Add = ({ token }) => {
           </div>
         </section>
 
-        {/* Product Media + Save */}
+        {/* Images */}
         <aside className="space-y-6">
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black">Product Images</h2>
+            <h2 className="mb-5 text-lg font-black">
+              Product Images
+            </h2>
+
             <div className="grid grid-cols-2 gap-3">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="relative aspect-square">
@@ -307,13 +413,14 @@ const Add = ({ token }) => {
                     <>
                       <img
                         src={previews[i]}
-                        alt={`Image ${i + 1}`}
+                        alt=""
                         className="h-full w-full rounded-lg object-cover"
                       />
+
                       <button
                         type="button"
                         onClick={() => removeImage(i)}
-                        className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-red-500 text-white shadow"
+                        className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-red-500 text-white"
                       >
                         <IoTrashOutline size={12} />
                       </button>
@@ -325,28 +432,38 @@ const Add = ({ token }) => {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => handleImageChange(i, e.target.files[0])}
+                        onChange={(e) =>
+                          handleImageChange(
+                            i,
+                            e.target.files[0]
+                          )
+                        }
                       />
+
                       <span className="flex flex-col items-center text-gray-400">
                         <IoCloudUploadOutline className="text-3xl text-red-400" />
-                        <span className="mt-1 text-xs font-semibold">Image {i + 1}</span>
+
+                        <span className="mt-1 text-xs font-semibold">
+                          Image {i + 1}
+                        </span>
                       </span>
                     </label>
                   )}
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-xs text-gray-400">PNG, JPG, WEBP · Max 5 MB each</p>
           </div>
 
+          {/* Submit */}
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-red-500 py-3 text-sm font-bold text-white hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-red-500 py-3 text-sm font-bold text-white hover:bg-gray-900 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
               <IoSaveOutline />
-              {loading ? "Saving…" : "Save Product"}
+
+              {loading ? "Saving..." : "Save Product"}
             </button>
           </div>
         </aside>

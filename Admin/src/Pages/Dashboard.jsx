@@ -81,7 +81,7 @@ const Dashboard = ({ token }) => {
       <section className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
         {/* Hero banner */}
         <article className="overflow-hidden rounded-lg bg-gray-900 text-white shadow-sm">
-          <div className="grid min-h-[280px] gap-6 p-6 md:grid-cols-[1fr_260px] md:items-center">
+          <div className="grid min-h-70 gap-6 p-6 md:grid-cols-[1fr_260px] md:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-300">
                 Live overview

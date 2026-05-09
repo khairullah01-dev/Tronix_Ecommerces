@@ -26,7 +26,8 @@ const productSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true   // e.g. "Electronics"
+    required: true,
+    default: "Electronics"  // e.g. "Electronics"
   },
   subCategory: {
     type: String,

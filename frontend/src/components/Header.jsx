@@ -151,17 +151,18 @@ export const Navbar = () => {
           )}
 
           {/* Admin panel shortcut */}
+         
           <a
-            href="http://localhost:5174"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Admin panel"
-            title="Open Admin Panel"
-            className="inline-flex h-10 items-center gap-2 rounded-sm border border-gray-200 px-3 text-sm font-bold text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-500  "
-          >
-            <IoGridOutline size={17} />
-            <span className="hidden sm:inline">Admin</span>
-          </a>
+  href="https://tronix-ecommerces-2wbi.vercel.app"
+  target="_blank" // This opens the link in a new tab
+  rel="noopener noreferrer" // Security best practice
+  aria-label="Admin-panel"
+  title="Open Admin Panel"
+  className="inline-flex h-10 items-center gap-2 rounded-sm border border-gray-200 px-3 text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-500"
+>
+  <IoGridOutline size={17} />
+  <span className="hidden sm:inline">Admin</span>
+</a>
 
           <Link
             to="/cart"

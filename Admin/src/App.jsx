@@ -15,7 +15,8 @@ import Dashboard from "./Pages/Dashboard";
 import List from "./Pages/List";
 import Order from "./Pages/Order";
 
-export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+export const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+// export const backendUrl = "http://localhost:3000"; --- IGNORE ---
 
 const mobileLinks = [
   { to: "/", label: "Home", icon: IoGridOutline },
