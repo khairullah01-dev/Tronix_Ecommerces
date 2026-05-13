@@ -46,10 +46,10 @@ const ProductCard = ({ product }) => {
         </Link>
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-black text-red-500">${displayPrice}</span>
+            <span className="text-lg font-black text-red-500">Rs.{displayPrice}</span>
             {oldPrice && (
               <span className="text-xs font-semibold text-gray-400 line-through">
-                ${oldPrice}
+                Rs.{oldPrice}
               </span>
             )}
           </div>
@@ -112,10 +112,10 @@ export const ProductCard2 = ({ product }) => {
           {product.name}
         </Link>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-lg font-black text-red-500">${displayPrice}</span>
+          <span className="text-lg font-black text-red-500">Rs.{displayPrice}</span>
           {oldPrice && (
             <span className="text-xs font-semibold text-gray-300 line-through">
-              ${oldPrice}
+              Rs.{oldPrice}
             </span>
           )}
         </div>

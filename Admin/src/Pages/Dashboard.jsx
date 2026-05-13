@@ -46,7 +46,7 @@ const Dashboard = ({ token }) => {
   const stats = [
     {
       label: "Revenue",
-      value: `$${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
+      value: `Rs.${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
       trend: `${orders.filter((o) => o.payment).length} paid`,
     },
     { label: "Orders", value: orders.length.toString(), trend: "total" },
@@ -91,7 +91,7 @@ const Dashboard = ({ token }) => {
               </h2>
               <div className="mt-6 grid max-w-md grid-cols-3 gap-3">
                 {[
-                  [IoTrendingUpOutline, "Revenue", `$${totalRevenue.toLocaleString()}`],
+                  [IoTrendingUpOutline, "Revenue", `Rs.${totalRevenue.toLocaleString()}`],
                   [IoBagHandleOutline, "Orders", orders.length],
                   [IoCubeOutline, "Products", products.length],
                 ].map(([Icon, label, value]) => (
@@ -162,7 +162,7 @@ const Dashboard = ({ token }) => {
                   <p className="truncate font-bold">{product.name}</p>
                   <p className="text-sm text-gray-400">{product.category}</p>
                 </div>
-                <p className="font-black text-red-500">${product.price}</p>
+                <p className="font-black text-red-500">Rs.{product.price}</p>
               </div>
             ))}
             {products.length === 0 && (
@@ -186,7 +186,7 @@ const Dashboard = ({ token }) => {
                 <span className="text-gray-500 truncate">
                   {order.address?.firstName} {order.address?.lastName}
                 </span>
-                <span className="font-black text-red-500">${order.amount?.toFixed(2)}</span>
+                <span className="font-black text-red-500">Rs.{order.amount?.toFixed(2)}</span>
               </div>
             ))}
             {orders.length === 0 && (

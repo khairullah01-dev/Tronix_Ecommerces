@@ -202,7 +202,7 @@ const Order = ({ token }) => {
                       Total
                     </p>
                     <p className="mt-2 text-2xl font-black text-red-500">
-                      ${order.amount?.toFixed(2)}
+                      Rs.{order.amount?.toFixed(2)}
                     </p>
                   </div>
                 </div>

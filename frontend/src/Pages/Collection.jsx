@@ -193,11 +193,11 @@ const Collection = () => {
 
                 <div className="mt-3 flex items-center justify-between text-sm font-semibold">
                   <span className="text-gray-400">
-                    $0
+                    Rs.0
                   </span>
 
                   <span className="rounded-sm bg-red-50 px-3 py-1 text-red-500">
-                    Up to ${maxPrice}
+                    Up to Rs.{maxPrice}
                   </span>
                 </div>
               </div> */}

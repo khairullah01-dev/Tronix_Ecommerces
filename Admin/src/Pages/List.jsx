@@ -135,7 +135,7 @@ const List = ({ token }) => {
                     </div>
                     <p className="text-sm font-semibold text-gray-500">{product.category}</p>
                     <p className="text-sm font-black">{product.stock}</p>
-                    <p className="text-sm font-black text-red-500">${product.price}</p>
+                    <p className="text-sm font-black text-red-500">Rs.{product.price}</p>
                     <div className="flex gap-2">
                       <button
                         type="button"

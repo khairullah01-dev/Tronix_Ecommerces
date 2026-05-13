@@ -1,5 +1,5 @@
 export const stats = [
-  { label: "Revenue", value: "$28,430", trend: "+12.4%" },
+  { label: "Revenue", value: "Rs.28,430", trend: "+12.4%" },
   { label: "Orders", value: "1,248", trend: "+8.2%" },
   { label: "Products", value: "186", trend: "+14" },
   { label: "Customers", value: "5,420", trend: "+6.8%" },

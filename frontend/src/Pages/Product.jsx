@@ -143,10 +143,10 @@ const Product = () => {
               {product.rating} rating
             </div>
             <div className="mt-6 flex items-baseline gap-3">
-              <span className="text-4xl font-black text-red-500">${displayPrice}</span>
+              <span className="text-4xl font-black text-red-500">Rs.{displayPrice}</span>
               {oldPrice && (
                 <span className="text-lg font-bold text-gray-300 line-through">
-                  ${oldPrice}
+                  Rs.{oldPrice}
                 </span>
               )}
             </div>

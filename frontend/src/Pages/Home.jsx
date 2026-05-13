@@ -307,7 +307,7 @@ const Home = () => {
       <section className="bg-gray-50 py-12">
         <div className="mx-auto grid w-[92%] max-w-6xl gap-4 md:grid-cols-4">
           {[
-            ["Free Shipping", "On orders over $100", IoCubeOutline],
+            ["Free Shipping", "On orders over Rs.100", IoCubeOutline],
             ["Secure Payment", "Protected checkout", IoShieldCheckmarkOutline],
             ["Easy Returns", "14-day return window", IoSyncOutline],
             ["Quality Checked", "Tested before shipping", IoBagCheckOutline],

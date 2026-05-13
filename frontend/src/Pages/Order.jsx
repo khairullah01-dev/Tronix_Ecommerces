@@ -135,7 +135,7 @@ const Order = () => {
                 {[
                   ["Status",  lastOrder.status || "Order Placed"],
                   ["Payment", lastOrder.paymentMethod || "—"],
-                  ["Total",   lastOrder.total ? `$${Number(lastOrder.total).toFixed(2)}` : "—"],
+                  ["Total",   lastOrder.total ? `Rs.${Number(lastOrder.total).toFixed(2)}` : "—"],
                 ].map(([label, value]) => (
                   <div key={label} className="rounded-lg bg-gray-50 p-4">
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
@@ -234,7 +234,7 @@ const Order = () => {
                       <div className="flex-1">
                         <p className="font-semibold text-gray-800">{item.name}</p>
                         <p className="text-gray-400">
-                          Qty: {item.quantity} · ${Number(item.price).toFixed(2)}
+                          Qty: {item.quantity} · Rs.{Number(item.price).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -246,7 +246,7 @@ const Order = () => {
                     Method: <strong className="text-gray-800">{order.paymentMethod}</strong>
                   </span>
                   <span className="text-lg font-black text-red-500">
-                    ${Number(order.amount).toFixed(2)}
+                    Rs.{Number(order.amount).toFixed(2)}
                   </span>
                 </div>
               </article>

@@ -339,7 +339,7 @@ const Placeorder = () => {
                         {item.name}{" "}
                         <span className="text-gray-400">× {item.quantity}</span>
                       </span>
-                      <strong>${(price * item.quantity).toFixed(2)}</strong>
+                      <strong>Rs.{(price * item.quantity).toFixed(2)}</strong>
                     </div>
                   );
                 })
@@ -350,16 +350,16 @@ const Placeorder = () => {
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between text-gray-500">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>Rs.{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-500">
                 <span>Shipping</span>
-                <span>${shipping.toFixed(2)}</span>
+                <span>Rs.{shipping.toFixed(2)}</span>
               </div>
             </div>
             <div className="mt-4 flex justify-between border-t border-gray-100 pt-4 text-lg font-black">
               <span>Total</span>
-              <span className="text-red-500">${total.toFixed(2)}</span>
+              <span className="text-red-500">Rs.{total.toFixed(2)}</span>
             </div>
 
             {error && (
