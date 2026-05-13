@@ -256,7 +256,7 @@ export const Navbar = () => {
 
             {/* Admin panel link in mobile sidebar */}
             <a
-              href="http://localhost:5174"
+              href="https://tronix-ecommerces-2wbi.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsSidebarOpen(false)}
