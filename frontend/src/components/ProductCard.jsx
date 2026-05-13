@@ -23,6 +23,7 @@ const ProductCard = ({ product }) => {
           <img
             src={image}
             alt={product.name}
+            loading="lazy"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         </div>
@@ -90,6 +91,7 @@ export const ProductCard2 = ({ product }) => {
           <img
             src={image}
             alt={product.name}
+            loading="lazy"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         </div>

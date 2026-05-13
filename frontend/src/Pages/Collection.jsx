@@ -9,6 +9,7 @@ const Collection = () => {
 
   const [showFilter, setShowFilter] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ const Collection = () => {
       try {
         setLoading(true);
 
-        const data = await apiRequest("/api/product/list");
+        const data = await apiRequest("/api/product/list?limit=200");
 
         setProducts(data.products || []);
       } catch (err) {
@@ -36,9 +37,11 @@ const Collection = () => {
     fetchProducts();
   }, []);
 
-  // Search Query from URL
+  // Search Query and selected category from URL
   useEffect(() => {
     setQuery(searchParams.get("search") || "");
+    const categoryParam = searchParams.get("category");
+    setSelectedCategory(categoryParam && categoryParam !== "" ? categoryParam : "All");
   }, [searchParams]);
 
   // Categories
@@ -66,6 +69,10 @@ const Collection = () => {
   // Filtered Products
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+      const matchesSelectedCategory =
+        selectedCategory === "All" ||
+        product.subCategory === selectedCategory;
+
       const matchesCategory =
         activeCategory === "All" ||
         product.subCategory === activeCategory;
@@ -78,12 +85,13 @@ const Collection = () => {
         Number(product.price) <= maxPrice;
 
       return (
+        matchesSelectedCategory &&
         matchesCategory &&
         matchesQuery &&
         matchesPrice
       );
     });
-  }, [products, activeCategory, query, maxPrice]);
+  }, [products, activeCategory, selectedCategory, query, maxPrice]);
 
   return (
     <main className="min-h-screen bg-gray-50 py-10">

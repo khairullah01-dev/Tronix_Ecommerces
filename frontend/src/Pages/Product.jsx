@@ -52,14 +52,14 @@ const Product = () => {
     if (!product) return;
     const fetchRelated = async () => {
       try {
-        const data = await apiRequest("/api/product/list");
-        const all = data.products || [];
-        const rel = all
-          .filter(
-            (p) => p.category === product.category && p._id !== product._id
-          )
-          .slice(0, 3);
-        setRelated(rel);
+        const query = new URLSearchParams({
+          category: product.category || "",
+          excludeId: product._id,
+          limit: 3,
+        }).toString();
+
+        const data = await apiRequest(`/api/product/list?${query}`);
+        setRelated(data.products || []);
       } catch {
         // Non-critical — just skip related products
       }

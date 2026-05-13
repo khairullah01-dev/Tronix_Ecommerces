@@ -64,7 +64,7 @@ const Home = () => {
 
   // Fetch products from backend
   useEffect(() => {
-    apiRequest("/api/product/list")
+    apiRequest("/api/product/list?limit=20")
       .then((data) => setProducts(data.products || []))
       .catch(() => { }); // silent fail — page still renders
   }, []);
@@ -111,7 +111,24 @@ const Home = () => {
   const flashProducts = sale.length >= 2 ? sale : products.slice(4, 8);
 
   // Unique categories from live products
-  const liveCategories = [...new Set(products.map((p) => p.category).filter(Boolean))];
+  const liveCategories = [...new Set(products.map((p) => p.subCategory).filter(Boolean))];
+
+  // Map live subcategories to category icons
+  const categoryIconMap = {
+    "Mobile": IoPhonePortraitOutline,
+    "Laptop": IoLaptopOutline,
+    "Headphones": IoHeadsetOutline,
+    "Gaming": IoGameControllerOutline,
+    "Smartwatch": IoWatchOutline,
+    "Camera": IoCameraOutline,
+    "Tablet": IoTabletLandscapeOutline,
+    "Monitor": IoTvOutline,
+  };
+
+  const dynamicCategories = liveCategories.map((subCat) => ({
+    name: subCat,
+    icon: categoryIconMap[subCat] || IoPhonePortraitOutline,
+  }));
 
   return (
     <main className="bg-white">
@@ -218,12 +235,12 @@ const Home = () => {
       {/* ─── Category grid ─────────────────────────────────────────────── */}
       <section className="mx-auto w-[92%] max-w-6xl py-8 ">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-          {categories.map((category) => {
+          {dynamicCategories.map((category) => {
             const Icon = category.icon;
             return (
               <Link
                 key={category.name}
-                to="/products"
+                to={`/products?category=${encodeURIComponent(category.name)}`}
                 className="rounded-lg border border-gray-100 bg-white p-4 text-center shadow-sm transition hover:border-red-200 hover:text-red-500"
               >
                 <Icon className="mx-auto mb-3 text-2xl" />

@@ -53,11 +53,51 @@ const addProduct = async (req, res) => {
 
 const listProducts = async (req, res) => {
     try {
-        const products = await productModel.find({})
-        res.json({ success: true, products })
+        const {
+            search,
+            category,
+            subCategory,
+            excludeId,
+            limit = 100,
+            page = 1,
+        } = req.query;
+
+        const filter = {};
+
+        if (search) {
+            filter.name = { $regex: search, $options: "i" };
+        }
+
+        if (category) {
+            filter.category = category;
+        }
+
+        if (subCategory) {
+            filter.subCategory = subCategory;
+        }
+
+        if (excludeId && mongoose.Types.ObjectId.isValid(excludeId)) {
+            filter._id = { $ne: excludeId };
+        }
+
+        const parsedLimit = Math.min(Math.max(Number(limit) || 20, 1), 200);
+        const parsedPage = Math.max(Number(page) || 1, 1);
+        const skip = (parsedPage - 1) * parsedLimit;
+
+        const [products, total] = await Promise.all([
+            productModel
+                .find(filter)
+                .select("name price discountPrice oldPrice images category subCategory brand stock bestseller rating")
+                .sort({ bestseller: -1, date: -1 })
+                .skip(skip)
+                .limit(parsedLimit),
+            productModel.countDocuments(filter),
+        ]);
+
+        res.json({ success: true, products, total, page: parsedPage, limit: parsedLimit });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message });
     }
 }
 
