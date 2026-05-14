@@ -20,6 +20,17 @@ const defaultSettings = () => ({
     linkedinUrl: "#",
     adminPanelUrl: "https://tronix-ecommerces-2wbi.vercel.app",
   },
+  footer: {
+    brandName: "Tronix",
+    description:
+      "Modern electronics store for phones, laptops, audio gear, gaming accessories, and smart devices.",
+    newsletterTitle: "Join our newsletter",
+    newsletterText: "Deals, launches, and buying tips in your inbox.",
+    instagramUrl: "#",
+    facebookUrl: "#",
+    twitterUrl: "#",
+    linkedinUrl: "#",
+  },
   contact: {
     intro:
       "Questions about products, delivery, warranty, or bulk orders? Send a message and the Tronix team will help.",
@@ -54,6 +65,10 @@ const normalizeSettings = (settings) => {
       ...fallback.header,
       ...(plain?.header || {}),
     },
+    footer: {
+      ...fallback.footer,
+      ...(plain?.footer || {}),
+    },
     contact: {
       ...fallback.contact,
       ...(plain?.contact || {}),
@@ -83,7 +98,7 @@ const getStoreSettings = async (req, res) => {
 
 const updateStoreSettings = async (req, res) => {
   try {
-    const { flashSaleEndsAt, header = {}, contact = {} } = req.body;
+    const { flashSaleEndsAt, header = {}, footer = {}, contact = {} } = req.body;
     const parsedDeadline = new Date(flashSaleEndsAt);
 
     if (!flashSaleEndsAt || Number.isNaN(parsedDeadline.getTime())) {
@@ -116,6 +131,16 @@ const updateStoreSettings = async (req, res) => {
           twitterUrl: String(header.twitterUrl || "").trim(),
           linkedinUrl: String(header.linkedinUrl || "").trim(),
           adminPanelUrl: String(header.adminPanelUrl || "").trim(),
+        },
+        footer: {
+          brandName: String(footer.brandName || "").trim(),
+          description: String(footer.description || "").trim(),
+          newsletterTitle: String(footer.newsletterTitle || "").trim(),
+          newsletterText: String(footer.newsletterText || "").trim(),
+          instagramUrl: String(footer.instagramUrl || "").trim(),
+          facebookUrl: String(footer.facebookUrl || "").trim(),
+          twitterUrl: String(footer.twitterUrl || "").trim(),
+          linkedinUrl: String(footer.linkedinUrl || "").trim(),
         },
         contact: {
           intro: String(contact.intro || "").trim(),

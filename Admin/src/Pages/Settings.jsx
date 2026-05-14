@@ -44,6 +44,16 @@ const Settings = ({ token }) => {
       linkedinUrl: "",
       adminPanelUrl: "",
     },
+    footer: {
+      brandName: "",
+      description: "",
+      newsletterTitle: "",
+      newsletterText: "",
+      instagramUrl: "",
+      facebookUrl: "",
+      twitterUrl: "",
+      linkedinUrl: "",
+    },
     contact: {
       intro: "",
       address: "",
@@ -73,6 +83,16 @@ const Settings = ({ token }) => {
               twitterUrl: settings.header?.twitterUrl || "",
               linkedinUrl: settings.header?.linkedinUrl || "",
               adminPanelUrl: settings.header?.adminPanelUrl || "",
+            },
+            footer: {
+              brandName: settings.footer?.brandName || "",
+              description: settings.footer?.description || "",
+              newsletterTitle: settings.footer?.newsletterTitle || "",
+              newsletterText: settings.footer?.newsletterText || "",
+              instagramUrl: settings.footer?.instagramUrl || "",
+              facebookUrl: settings.footer?.facebookUrl || "",
+              twitterUrl: settings.footer?.twitterUrl || "",
+              linkedinUrl: settings.footer?.linkedinUrl || "",
             },
             contact: {
               intro: settings.contact?.intro || "",
@@ -117,6 +137,18 @@ const Settings = ({ token }) => {
       ...prev,
       header: {
         ...prev.header,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleFooterChange = (event) => {
+    const { name, value } = event.target;
+
+    setForm((prev) => ({
+      ...prev,
+      footer: {
+        ...prev.footer,
         [name]: value,
       },
     }));
@@ -170,6 +202,7 @@ const Settings = ({ token }) => {
         {
           flashSaleEndsAt: new Date(form.flashSaleEndsAt).toISOString(),
           header: form.header,
+          footer: form.footer,
           contact: form.contact,
         },
         { headers: { token } }
@@ -377,6 +410,92 @@ const Settings = ({ token }) => {
         </section>
 
         <section className="space-y-6">
+          <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-sm bg-red-50 text-red-500">
+                <IoMailOutline size={22} />
+              </span>
+              <div>
+                <h2 className="font-black">Footer</h2>
+                <p className="text-sm font-semibold text-gray-400">
+                  Controls footer brand text, newsletter copy, and social links.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Footer Brand Name
+                </span>
+                <input
+                  name="brandName"
+                  value={form.footer.brandName}
+                  onChange={handleFooterChange}
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
+
+              <label className="block space-y-2">
+                <span className="text-sm font-bold text-gray-600">
+                  Newsletter Title
+                </span>
+                <input
+                  name="newsletterTitle"
+                  value={form.footer.newsletterTitle}
+                  onChange={handleFooterChange}
+                  className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                />
+              </label>
+            </div>
+
+            <label className="mt-4 block space-y-2">
+              <span className="text-sm font-bold text-gray-600">
+                Footer Description
+              </span>
+              <textarea
+                name="description"
+                value={form.footer.description}
+                onChange={handleFooterChange}
+                rows={3}
+                className="w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+              />
+            </label>
+
+            <label className="mt-4 block space-y-2">
+              <span className="text-sm font-bold text-gray-600">
+                Newsletter Text
+              </span>
+              <input
+                name="newsletterText"
+                value={form.footer.newsletterText}
+                onChange={handleFooterChange}
+                className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+              />
+            </label>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {[
+                ["Instagram URL", "instagramUrl"],
+                ["Facebook URL", "facebookUrl"],
+                ["Twitter URL", "twitterUrl"],
+                ["LinkedIn URL", "linkedinUrl"],
+              ].map(([label, name]) => (
+                <label key={name} className="block space-y-2">
+                  <span className="text-sm font-bold text-gray-600">
+                    {label}
+                  </span>
+                  <input
+                    name={name}
+                    value={form.footer[name]}
+                    onChange={handleFooterChange}
+                    className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm outline-none focus:border-red-400"
+                  />
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
             <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>

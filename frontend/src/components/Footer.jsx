@@ -1,9 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { IoMailOutline, IoPaperPlaneOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { apiRequest } from "../utils/api";
+
+const defaultFooterSettings = {
+  brandName: "Tronix",
+  description:
+    "Modern electronics store for phones, laptops, audio gear, gaming accessories, and smart devices.",
+  newsletterTitle: "Join our newsletter",
+  newsletterText: "Deals, launches, and buying tips in your inbox.",
+  instagramUrl: "#",
+  facebookUrl: "#",
+  twitterUrl: "#",
+  linkedinUrl: "#",
+};
+
+const externalLinkProps = (href) =>
+  href && href !== "#"
+    ? { href, target: "_blank", rel: "noopener noreferrer" }
+    : { href: "#" };
 
 const Footer = () => {
+  const [footerSettings, setFooterSettings] = useState(defaultFooterSettings);
+
+  useEffect(() => {
+    apiRequest("/api/store-settings")
+      .then((data) => {
+        if (data.settings?.footer) {
+          setFooterSettings({
+            ...defaultFooterSettings,
+            ...data.settings.footer,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const socialLinks = [
+    ["Instagram", FaInstagram, footerSettings.instagramUrl],
+    ["Facebook", FaFacebook, footerSettings.facebookUrl],
+    ["Twitter", FaTwitter, footerSettings.twitterUrl],
+    ["LinkedIn", FaLinkedin, footerSettings.linkedinUrl],
+  ];
+
   return (
     <footer className="bg-red-50">
       <div className="bg-red-500 py-6 text-white">
@@ -13,8 +53,12 @@ const Footer = () => {
               <IoMailOutline size={22} />
             </div>
             <div>
-              <h3 className="text-base font-bold">Join our newsletter</h3>
-              <p className="text-sm text-white/80">Deals, launches, and buying tips in your inbox.</p>
+              <h3 className="text-base font-bold">
+                {footerSettings.newsletterTitle}
+              </h3>
+              <p className="text-sm text-white/80">
+                {footerSettings.newsletterText}
+              </p>
             </div>
           </div>
           <form className="flex w-full max-w-md overflow-hidden rounded-sm bg-white">
@@ -38,10 +82,10 @@ const Footer = () => {
       <div className="mx-auto grid w-[92%] max-w-6xl gap-8 py-12 text-sm text-gray-500 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link to="/" className="text-2xl font-black text-red-500">
-            Tronix
+            {footerSettings.brandName}
           </Link>
           <p className="mt-4 max-w-sm leading-6">
-            Modern electronics store for phones, laptops, audio gear, gaming accessories, and smart devices.
+            {footerSettings.description}
           </p>
         </div>
         <div>
@@ -63,10 +107,11 @@ const Footer = () => {
         <div>
           <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-900">Follow</h4>
           <div className="flex gap-3 text-lg text-red-500">
-            <a aria-label="Instagram" href="#"><FaInstagram /></a>
-            <a aria-label="Facebook" href="#"><FaFacebook /></a>
-            <a aria-label="Twitter" href="#"><FaTwitter /></a>
-            <a aria-label="LinkedIn" href="#"><FaLinkedin /></a>
+            {socialLinks.map(([label, Icon, href]) => (
+              <a key={label} aria-label={label} {...externalLinkProps(href)}>
+                {React.createElement(Icon)}
+              </a>
+            ))}
           </div>
         </div>
       </div>

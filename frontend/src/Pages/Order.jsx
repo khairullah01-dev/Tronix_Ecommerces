@@ -16,6 +16,81 @@ const statusClass = {
   Cancelled:      "bg-red-50 text-red-500",
 };
 
+const orderSteps = ["Order Placed", "Processing", "Shipped", "Delivered"];
+
+const statusMessages = {
+  "Order Placed": "Your order has been received and is waiting for processing.",
+  Processing: "Your products are being checked, packed, and prepared for dispatch.",
+  Shipped: "Your order has left the store and is on the way.",
+  Delivered: "Your order has been delivered.",
+  Cancelled: "This order has been cancelled.",
+};
+
+const getStepIndex = (status) => {
+  if (status === "Cancelled") return -1;
+  const index = orderSteps.indexOf(status);
+  return index === -1 ? 0 : index;
+};
+
+const OrderProgress = ({ status }) => {
+  const currentStep = getStepIndex(status);
+  const isCancelled = status === "Cancelled";
+
+  return (
+    <div className="mt-5 rounded-lg bg-gray-50 p-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        {orderSteps.map((step, index) => {
+          const isComplete = !isCancelled && index <= currentStep;
+          const isCurrent = !isCancelled && index === currentStep;
+
+          return (
+            <div key={step} className="flex flex-1 items-center gap-3">
+              <div
+                className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black ${
+                  isComplete
+                    ? "bg-red-500 text-white"
+                    : "bg-white text-gray-300 ring-1 ring-gray-200"
+                }`}
+              >
+                {isComplete ? <IoCheckmarkCircleOutline size={20} /> : index + 1}
+              </div>
+              <div className="min-w-0">
+                <p
+                  className={`text-sm font-black ${
+                    isCurrent ? "text-red-500" : "text-gray-700"
+                  }`}
+                >
+                  {step}
+                </p>
+                <div
+                  className={`mt-2 h-1 rounded-full md:hidden ${
+                    isComplete ? "bg-red-500" : "bg-gray-200"
+                  }`}
+                />
+              </div>
+              {index < orderSteps.length - 1 && (
+                <div
+                  className={`hidden h-1 flex-1 rounded-full md:block ${
+                    !isCancelled && index < currentStep ? "bg-red-500" : "bg-gray-200"
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <p
+        className={`mt-4 text-sm font-semibold ${
+          isCancelled ? "text-red-500" : "text-gray-500"
+        }`}
+      >
+        {statusMessages[status] || statusMessages["Order Placed"]}
+      </p>
+    </div>
+  );
+};
+
 const Order = () => {
   const [searchParams] = useSearchParams();
   const { clearCart } = useCart();
@@ -24,6 +99,7 @@ const Order = () => {
   const [loading, setLoading]= useState(true);
   const [error, setError] = useState("");
   const [verifyStatus, setVerifyStatus] = useState("idle"); // idle | verifying | success | fail
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const verifiedRef = useRef(false);     // prevent double-call in StrictMode
 
   // Read Stripe redirect params from URL
@@ -62,7 +138,7 @@ const Order = () => {
       }
     };
     verifyStripe();
-  }, [payment, orderId, sessionId]);
+  }, [payment, orderId, sessionId, clearCart]);
 
   // ── Fetch order history ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -92,6 +168,21 @@ const Order = () => {
     }
   })();
 
+  useEffect(() => {
+    const shouldShowConfirmation =
+      verifyStatus === "success" || (lastOrder && verifyStatus === "idle");
+
+    if (!shouldShowConfirmation) return;
+
+    setShowConfirmation(true);
+    const timer = setTimeout(() => {
+      setShowConfirmation(false);
+      localStorage.removeItem("tronix_last_order");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [verifyStatus, lastOrder]);
+
   return (
     <main className="min-h-screen bg-gray-50 py-10">
       <div className="mx-auto max-w-3xl px-6">
@@ -117,7 +208,7 @@ const Order = () => {
         )}
 
         {/* ── Order confirmation banner ────────────────────────────────────── */}
-        {(verifyStatus === "success" || (lastOrder && verifyStatus === "idle")) && (
+        {showConfirmation && (
           <section className="mb-8 rounded-lg bg-white p-8 text-center shadow-sm">
             <IoCheckmarkCircleOutline className="mx-auto text-6xl text-red-500" />
             <h1 className="mt-4 text-3xl font-black">
@@ -131,6 +222,7 @@ const Order = () => {
               .
             </p>
             {lastOrder && (
+              <>
               <div className="mt-8 grid gap-4 text-left sm:grid-cols-3">
                 {[
                   ["Status",  lastOrder.status || "Order Placed"],
@@ -145,6 +237,8 @@ const Order = () => {
                   </div>
                 ))}
               </div>
+              <OrderProgress status={lastOrder.status || "Order Placed"} />
+              </>
             )}
           </section>
         )}
@@ -220,6 +314,8 @@ const Order = () => {
                     </span>
                   </div>
                 </div>
+
+                <OrderProgress status={order.status || "Order Placed"} />
 
                 <div className="mt-4 space-y-2 text-sm">
                   {(order.items || []).map((item, i) => (

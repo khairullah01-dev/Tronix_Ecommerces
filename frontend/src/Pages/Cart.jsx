@@ -6,6 +6,7 @@ import {
   IoRemove,
   IoTrashOutline,
   IoCheckmarkCircleOutline,
+  IoReceiptOutline,
 } from "react-icons/io5";
 import { useCart } from "../context/CartContext";
 
@@ -167,6 +168,14 @@ const Cart = () => {
                 className="block rounded-sm bg-red-500 py-3 text-center text-sm font-bold text-white hover:bg-gray-900"
               >
                 Proceed to Checkout
+              </Link>
+
+              <Link
+                to="/order"
+                className="mt-4 flex items-center justify-center gap-2 rounded-sm border border-gray-200 py-3 text-sm font-bold text-gray-700 hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+              >
+                <IoReceiptOutline size={18} />
+                My Orders
               </Link>
 
               {/* Continue Shopping */}

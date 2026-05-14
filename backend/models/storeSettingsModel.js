@@ -62,6 +62,49 @@ const storeSettingsSchema = new mongoose.Schema(
         default: "https://tronix-ecommerces-2wbi.vercel.app",
       },
     },
+    footer: {
+      brandName: {
+        type: String,
+        trim: true,
+        default: "Tronix",
+      },
+      description: {
+        type: String,
+        trim: true,
+        default:
+          "Modern electronics store for phones, laptops, audio gear, gaming accessories, and smart devices.",
+      },
+      newsletterTitle: {
+        type: String,
+        trim: true,
+        default: "Join our newsletter",
+      },
+      newsletterText: {
+        type: String,
+        trim: true,
+        default: "Deals, launches, and buying tips in your inbox.",
+      },
+      instagramUrl: {
+        type: String,
+        trim: true,
+        default: "#",
+      },
+      facebookUrl: {
+        type: String,
+        trim: true,
+        default: "#",
+      },
+      twitterUrl: {
+        type: String,
+        trim: true,
+        default: "#",
+      },
+      linkedinUrl: {
+        type: String,
+        trim: true,
+        default: "#",
+      },
+    },
     contact: {
       intro: {
         type: String,
