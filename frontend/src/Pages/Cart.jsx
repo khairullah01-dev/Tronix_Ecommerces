@@ -124,77 +124,7 @@ const Cart = () => {
                 );
               })}
 
-              {/* Order Processing Section */}
-              <div className="rounded-lg bg-white p-6 shadow-sm">
-                <div className="mb-6">
-                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">
-                    Order Status
-                  </p>
-
-                  <h2 className="mt-2 text-2xl font-black">
-                    Order Processing
-                  </h2>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Step 1 */}
-                  <div className="flex items-start gap-4">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-green-100 text-green-600">
-                      <IoCheckmarkCircleOutline size={22} />
-                    </div>
-
-                    <div>
-                      <h3 className="font-black text-gray-900">
-                        Cart Confirmed
-                      </h3>
-
-                      <p className="mt-1 text-sm text-gray-500">
-                        Your selected products are ready for checkout.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Line */}
-                  <div className="ml-5 h-8 border-l-2 border-dashed border-gray-200"></div>
-
-                  {/* Step 2 */}
-                  <div className="flex items-start gap-4">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-red-500 text-white font-black">
-                      2
-                    </div>
-
-                    <div>
-                      <h3 className="font-black text-gray-900">
-                        Shipping & Payment
-                      </h3>
-
-                      <p className="mt-1 text-sm text-gray-500">
-                        Add address details and complete payment securely.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Line */}
-                  <div className="ml-5 h-8 border-l-2 border-dashed border-gray-200"></div>
-
-                  {/* Step 3 */}
-                  <div className="flex items-start gap-4">
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gray-100 text-gray-500 font-black">
-                      3
-                    </div>
-
-                    <div>
-                      <h3 className="font-black text-gray-500">
-                        Order Delivered
-                      </h3>
-
-                      <p className="mt-1 text-sm text-gray-400">
-                        Your order will be processed and delivered soon.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
             </section>
 
             {/* Sidebar */}

@@ -203,7 +203,7 @@ const Home = () => {
         </div>
 
         {/* Side banners */}
-        <div className="border border-yellow-400 grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
           {[
             {
               title: "Studio audio",
