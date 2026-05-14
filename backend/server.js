@@ -8,6 +8,7 @@ import userRouter from "./Routes/userRoutes.js";
 import productRouter from "./Routes/product.route.js";
 import cartRouter from "./Routes/cartRoutes.js";
 import orderRouter from "./Routes/orderRoutes.js";
+import storeSettingsRouter from "./Routes/storeSettingsRoutes.js";
 
 // DNS setting kept from original code for MongoDB Atlas connectivity
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
@@ -51,6 +52,7 @@ app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/store-settings", storeSettingsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });

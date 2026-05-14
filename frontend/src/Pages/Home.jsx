@@ -57,26 +57,41 @@ const heroSlides = [
   },
 ];
 
+const buildFallbackFlashSaleEndsAt = () => {
+  const deadline = new Date();
+  deadline.setDate(deadline.getDate() + 2);
+  deadline.setHours(23, 59, 59, 999);
+  return deadline.toISOString();
+};
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [flashSaleEndsAt, setFlashSaleEndsAt] = useState(buildFallbackFlashSaleEndsAt);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Fetch products from backend
   useEffect(() => {
     apiRequest("/api/product/list?limit=20")
       .then((data) => setProducts(data.products || []))
-      .catch(() => { }); // silent fail — page still renders
+      .catch(() => { });
+
+    apiRequest("/api/store-settings")
+      .then((data) => {
+        if (data.settings?.flashSaleEndsAt) {
+          setFlashSaleEndsAt(data.settings.flashSaleEndsAt);
+        }
+      })
+      .catch(() => { });
   }, []);
 
   // Countdown timer
   useEffect(() => {
-    const deadline = new Date();
-    deadline.setDate(deadline.getDate() + 2);
-    deadline.setHours(23, 59, 59, 999);
+    const deadlineTime = new Date(flashSaleEndsAt).getTime();
+    const targetTime = Number.isNaN(deadlineTime) ? Date.now() : deadlineTime;
 
     const updateTimer = () => {
-      const distance = Math.max(0, deadline.getTime() - Date.now());
+      const distance = Math.max(0, targetTime - Date.now());
       setTimeLeft({
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
@@ -87,7 +102,7 @@ const Home = () => {
     updateTimer();
     const timer = setInterval(updateTimer, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [flashSaleEndsAt]);
 
   // Auto-advance hero slider
   useEffect(() => {

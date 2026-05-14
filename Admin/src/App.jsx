@@ -6,6 +6,7 @@ import {
   IoBagCheckOutline,
   IoCubeOutline,
   IoGridOutline,
+  IoSettingsOutline,
 } from "react-icons/io5";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -14,6 +15,7 @@ import Add from "./Pages/Add";
 import Dashboard from "./Pages/Dashboard";
 import List from "./Pages/List";
 import Order from "./Pages/Order";
+import Settings from "./Pages/Settings";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 // export const backendUrl = "http://localhost:3000"; --- IGNORE ---
@@ -23,6 +25,7 @@ const mobileLinks = [
   { to: "/add", label: "Add", icon: IoAddCircleOutline },
   { to: "/list", label: "List", icon: IoCubeOutline },
   { to: "/order", label: "Orders", icon: IoBagCheckOutline },
+  { to: "/settings", label: "Settings", icon: IoSettingsOutline },
 ];
 
 const App = () => {
@@ -53,11 +56,12 @@ const App = () => {
             <Route path="/add" element={<Add token={token} />} />
             <Route path="/list" element={<List token={token} />} />
             <Route path="/order" element={<Order token={token} />} />
+            <Route path="/settings" element={<Settings token={token} />} />
           </Routes>
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 grid grid-cols-4 border-t border-gray-100 bg-white md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5 border-t border-gray-100 bg-white md:hidden">
         {mobileLinks.map((link) => {
           const Icon = link.icon;
           return (

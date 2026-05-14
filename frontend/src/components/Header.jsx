@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
 import {
   IoBagOutline,
@@ -14,6 +14,7 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { apiRequest } from "../utils/api";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -28,26 +29,77 @@ const navClass = ({ isActive }) =>
     isActive ? "text-red-500" : "text-gray-600"
   }`;
 
+const defaultHeaderSettings = {
+  brandName: "Tronix",
+  phone: "+1 234 567 890",
+  email: "support@tronix.com",
+  instagramUrl: "#",
+  facebookUrl: "#",
+  twitterUrl: "#",
+  linkedinUrl: "#",
+  adminPanelUrl: "https://tronix-ecommerces-2wbi.vercel.app",
+};
+
+const useHeaderSettings = () => {
+  const [headerSettings, setHeaderSettings] = useState(defaultHeaderSettings);
+
+  useEffect(() => {
+    apiRequest("/api/store-settings")
+      .then((data) => {
+        if (data.settings?.header) {
+          setHeaderSettings({
+            ...defaultHeaderSettings,
+            ...data.settings.header,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  return headerSettings;
+};
+
+const externalLinkProps = (href) =>
+  href && href !== "#"
+    ? { href, target: "_blank", rel: "noopener noreferrer" }
+    : { href: "#" };
+
 export const Header = () => {
+  const headerSettings = useHeaderSettings();
+
+  const socialLinks = [
+    ["Instagram", FaInstagram, headerSettings.instagramUrl],
+    ["Facebook", FaFacebook, headerSettings.facebookUrl],
+    ["Twitter", FaTwitter, headerSettings.twitterUrl],
+    ["LinkedIn", FaLinkedin, headerSettings.linkedinUrl],
+  ];
+
   return (
     <div className="hidden border-b border-gray-100 bg-white py-2 md:block">
       <header className="mx-auto flex w-[92%] max-w-6xl items-center justify-between text-sm text-gray-500">
         <ul className="flex gap-4 text-gray-400">
-          <li><a aria-label="Instagram" href="#"><FaInstagram /></a></li>
-          <li><a aria-label="Facebook" href="#"><FaFacebook /></a></li>
-          <li><a aria-label="Twitter" href="#"><FaTwitter /></a></li>
-          <li><a aria-label="LinkedIn" href="#"><FaLinkedin /></a></li>
+          {socialLinks.map(([label, Icon, href]) => (
+            <li key={label}>
+              <a aria-label={label} {...externalLinkProps(href)}>
+                {React.createElement(Icon)}
+              </a>
+            </li>
+          ))}
         </ul>
 
         <ul className="flex items-center gap-6">
-          <li className="flex items-center gap-2">
-            <FiPhone size={14} className="text-red-500" />
-            <span>+1 234 567 890</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <MdOutlineMail size={15} className="text-red-500" />
-            <span>support@tronix.com</span>
-          </li>
+          {headerSettings.phone && (
+            <li className="flex items-center gap-2">
+              <FiPhone size={14} className="text-red-500" />
+              <span>{headerSettings.phone}</span>
+            </li>
+          )}
+          {headerSettings.email && (
+            <li className="flex items-center gap-2">
+              <MdOutlineMail size={15} className="text-red-500" />
+              <span>{headerSettings.email}</span>
+            </li>
+          )}
         </ul>
       </header>
     </div>
@@ -57,6 +109,7 @@ export const Header = () => {
 export const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const headerSettings = useHeaderSettings();
   const navigate = useNavigate();
   const { count } = useCart();
   const { isLoggedIn, logout, user } = useAuth();
@@ -94,7 +147,7 @@ export const Navbar = () => {
             <IoMenu size={26} />
           </button>
           <Link to="/" className="text-2xl font-black tracking-tight text-red-500">
-            Tronix
+            {headerSettings.brandName || defaultHeaderSettings.brandName}
           </Link>
         </div>
 
@@ -153,16 +206,14 @@ export const Navbar = () => {
           {/* Admin panel shortcut */}
          
           <a
-  href="https://tronix-ecommerces-2wbi.vercel.app"
-  target="_blank" // This opens the link in a new tab
-  rel="noopener noreferrer" // Security best practice
-  aria-label="Admin-panel"
-  title="Open Admin Panel"
-  className="inline-flex h-10 items-center gap-2 rounded-sm border border-gray-200 px-3 text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-500"
->
-  <IoGridOutline size={17} />
-  <span className="hidden sm:inline">Admin</span>
-</a>
+            {...externalLinkProps(headerSettings.adminPanelUrl)}
+            aria-label="Admin-panel"
+            title="Open Admin Panel"
+            className="inline-flex h-10 items-center gap-2 rounded-sm border border-gray-200 px-3 text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-500"
+          >
+            <IoGridOutline size={17} />
+            <span className="hidden sm:inline">Admin</span>
+          </a>
 
           <Link
             to="/cart"
@@ -211,7 +262,9 @@ export const Navbar = () => {
           onClick={(event) => event.stopPropagation()}
         >
           <div className="mb-8 flex items-center  justify-between">
-            <span className="text-2xl font-black text-red-500 ">Tronix</span>
+            <span className="text-2xl font-black text-red-500 ">
+              {headerSettings.brandName || defaultHeaderSettings.brandName}
+            </span>
             <button
               type="button"
               aria-label="Close menu"
@@ -256,9 +309,7 @@ export const Navbar = () => {
 
             {/* Admin panel link in mobile sidebar */}
             <a
-              href="https://tronix-ecommerces-2wbi.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
+              {...externalLinkProps(headerSettings.adminPanelUrl)}
               onClick={() => setIsSidebarOpen(false)}
               className="mt-2 flex items-center gap-2 rounded-sm border border-gray-200 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-900 hover:text-white"
             >

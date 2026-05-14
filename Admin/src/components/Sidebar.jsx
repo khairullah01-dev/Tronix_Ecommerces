@@ -5,6 +5,7 @@ import {
   IoBagCheckOutline,
   IoCubeOutline,
   IoGridOutline,
+  IoSettingsOutline,
 } from "react-icons/io5";
 
 const links = [
@@ -12,6 +13,7 @@ const links = [
   { to: "/add", label: "Add Product", icon: IoAddCircleOutline },
   { to: "/list", label: "Products", icon: IoCubeOutline },
   { to: "/order", label: "Orders", icon: IoBagCheckOutline },
+  { to: "/settings", label: "Settings", icon: IoSettingsOutline },
 ];
 
 const Sidebar = () => {
